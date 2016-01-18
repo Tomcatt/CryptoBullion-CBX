@@ -1169,7 +1169,25 @@ unsigned int static GetNextTargetRequiredPoSP(const CBlockIndex* pindexLast){
     if (pindexPrevPrev->pprev == NULL)
         return bnTargetLimit.GetCompact(); // second block
 
+    if(pindexLast->nHeight == HARDFORK_HEIGHTV2) 
+        return 487245310; // Hardcoded way to unstuck wallet
+
     int64 nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
+
+    if(pindexLast->nTime >= HARDFORK_TIMEV3){
+        if(nActualSpacing < 0){
+            nActualSpacing = 1;
+        }else if(nActualSpacing > (16*60)){
+            nActualSpacing = (16*60);
+        }
+    }else{
+        if(pindexLast->nHeight >= HARDFORK_HEIGHTV2){
+            if(nActualSpacing < 0){
+                printf("ERROR: Block from past\n");
+                return POSP_TARGET_LIMIT;
+            }
+        }
+    }
 
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
@@ -1181,9 +1199,13 @@ unsigned int static GetNextTargetRequiredPoSP(const CBlockIndex* pindexLast){
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
 
-    if(bnNew.GetCompact() > POSP_TARGET_LIMIT)
-        return POSP_TARGET_LIMIT;
-    
+    if(pindexLast->nHeight >= HARDFORK_HEIGHTV2){
+        if(bnNew.GetCompact() > POSP_TARGET_LIMIT || bnNew <= 0)
+            return POSP_TARGET_LIMIT;
+    }else{
+        if(bnNew.GetCompact() > POSP_TARGET_LIMIT)
+            return POSP_TARGET_LIMIT;
+    }
 
     return bnNew.GetCompact();
 }
