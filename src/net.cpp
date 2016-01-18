@@ -1852,15 +1852,9 @@ void StartNode(boost::thread_group& threadGroup)
 
     if (!GetBoolArg("-dnsseed", true))
         printf("DNS seeding disabled\n");
-    //else
-       // threadGroup.create_thread(boost::bind(&TraceThread<boost::function<void()> >, "dnsseed", &ThreadDNSAddressSeed));
-
-    /*
-    if (!GetBoolArg("-dnsseed", false))
-        printf("DNS seeding disabled\n");
-    if (GetBoolArg("-dnsseed", false))
-        printf("DNS seeding NYI\n");
-    */
+    else
+       if (!NewThread(ThreadDNSAddressSeed, NULL))
+            printf("Error: NewThread(ThreadDNSAddressSeed) failed\n");
 
     // Map ports with UPnP
     if (fUseUPnP)
