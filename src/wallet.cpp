@@ -1581,8 +1581,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         txNew.vout.push_back(CTxOut(0, txNew.vout[1].scriptPubKey)); //split stake
 
     int64 nMinFee = 0;
-    unsigned int nBytes;
-    int nIn = 0;
 
     while (true)
     {
@@ -1599,7 +1597,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             txNew.vout[1].nValue = nCredit - nMinFee;
 
         // Sign
-        nIn = 0;
+        int nIn = 0;
         BOOST_FOREACH(const CWalletTx* pcoin, vwtxPrev)
         {
             if (!SignSignature(*this, *pcoin, txNew, nIn++))
@@ -1607,7 +1605,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         }
 
         // Limit size
-        nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
+        unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
         if (nBytes >= MAX_BLOCK_SIZE_GEN/5)
             return error("CreateCoinStake : exceeded coinstake size limit");
 
