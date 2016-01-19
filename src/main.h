@@ -133,7 +133,6 @@ bool SendMessages(CNode* pto, bool fSendTrickle);
 typedef boost::signals2::signal<void (unsigned int bytesRead)> ExternalBlockFileProgress;
 bool LoadExternalBlockFile(FILE* fileIn, ExternalBlockFileProgress *progress=NULL, int blockfileVersion = CLIENT_VERSION);
 
-void GenerateCryptobullions(bool fGenerate, CWallet* pwallet);
 CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake=false);
 void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash1);

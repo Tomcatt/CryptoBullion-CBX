@@ -1887,9 +1887,6 @@ void StartNode(boost::thread_group& threadGroup)
     // ppcoin: mint proof-of-stake blocks in the background
     if (!NewThread(ThreadStakeMinter, pwalletMain))
         printf("Error: NewThread(ThreadStakeMinter) failed\n");
-
-    // Generate coins in the background
-    GenerateCryptobullions(GetBoolArg("-gen", false), pwalletMain);
 }
 
 bool StopNode()
