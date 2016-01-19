@@ -291,7 +291,6 @@ SOURCES += \
     src/cryptobullionrpc.cpp \
     src/rpcdump.cpp \
     src/rpcnet.cpp \
-    src/rpcmining.cpp \
     src/rpcwallet.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
