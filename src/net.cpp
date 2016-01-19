@@ -1884,9 +1884,12 @@ void StartNode(boost::thread_group& threadGroup)
     if (!NewThread(ThreadDumpAddress, NULL))
         printf("Error; NewThread(ThreadDumpAddress) failed\n");
 
-    // ppcoin: mint proof-of-stake blocks in the background
-    if (!NewThread(ThreadStakeMinter, pwalletMain))
-        printf("Error: NewThread(ThreadStakeMinter) failed\n");
+    // Mint proof-of-stake blocks in the background
+    if(!GetBoolArg("-nostake", false)){
+        if (!NewThread(ThreadStakeMinter, pwalletMain)){
+            printf("Error: NewThread(ThreadStakeMinter) failed\n");
+        }
+    }
 }
 
 bool StopNode()
