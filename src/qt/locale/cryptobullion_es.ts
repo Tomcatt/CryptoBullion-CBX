@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es">
+<TS version="2.0" language="es">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -481,7 +481,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+14"/>
         <source>Export the data in the current tab to a file</source>
-        <translation type="unfinished">Exportar los datos en la ficha actual a un archivo</translation>
+        <translation type="unfinished">Exportar los datos de la ficha actual a un archivo</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -559,7 +559,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+23"/>
         <source>&amp;About CryptoBullion</source>
-        <translation type="unfinished">&amp;Acreca del CryptoBullion</translation>
+        <translation type="unfinished">&amp;Acerca de CryptoBullion</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -619,7 +619,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+40"/>
         <source>Downloaded %1 blocks of transaction history.</source>
-        <translation type="unfinished">Bajé %1 bloques de historial de transacciones.</translation>
+        <translation type="unfinished">Descargué %1 bloques de historial de transacciones.</translation>
     </message>
     <message numerus="yes">
         <location line="+22"/>
@@ -2003,7 +2003,7 @@ Esta etiqueta se convierte en rojo, si la prioridad es menor que &quot;medio&quo
     <message>
         <location line="+1"/>
         <source>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</source>
-        <translation type="unfinished">Escribe &lt;b&gt;help&lt;/b&gt; para ver los comandos de línea disponibles.</translation>
+        <translation type="unfinished">Escribe &lt;b&gt;help&lt;/b&gt; para ver los mandos de línea disponibles.</translation>
     </message>
 </context>
 <context>
