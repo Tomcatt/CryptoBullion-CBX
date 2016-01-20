@@ -104,6 +104,7 @@ extern unsigned char pchMessageStart[4];
 extern std::map<uint256, CBlock*> mapOrphanBlocks;
 
 // Settings
+extern bool fStakeUsePooledKeys;
 extern int64 nTransactionFee;
 extern bool fUseFastIndex; // cache scrypt hashes to disk
 
@@ -136,6 +137,7 @@ bool LoadExternalBlockFile(FILE* fileIn, ExternalBlockFileProgress *progress=NUL
 CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake=false);
 void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash1);
+bool CheckStake(CBlock* pblock, CWallet& wallet);
 bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey);
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 int64 GetProofOfWorkReward(unsigned int nBits);
@@ -1143,8 +1145,8 @@ public:
     bool AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos);
     bool CheckBlock(bool fCheckPOW=true, bool fCheckMerkleRoot=true, bool fCheckSig=true) const;
     bool AcceptBlock();
-    bool GetCoinAge(uint64& nCoinAge) const; // ppcoin: calculate total coin age spent in block
-    bool SignBlock(const CKeyStore& keystore);
+    bool GetCoinAge(uint64& nCoinAge) const; // Calculate total coin age spent in block
+    bool SignBlock(CWallet& keystore);
     bool CheckBlockSignature() const;
 
 private:

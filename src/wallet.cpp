@@ -1485,7 +1485,7 @@ bool CWallet::SelectCoinsForPoSP(int64 nTargetValue, unsigned int nSpendTime, se
 }
 
 // Create coin stake transaction
-bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64 nSearchInterval, CTransaction& txNew)
+bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64 nSearchInterval, CTransaction& txNew, CKey& key)
 {
     CBigNum bnTargetPerCoinDay;
     bnTargetPerCoinDay.SetCompact(nBits);
@@ -1563,7 +1563,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 if (whichType == TX_PUBKEYHASH) // pay to address type
                 {
                     // convert to pay to public key type
-                    CKey key;
                     if (!keystore.GetKey(uint160(vSolutions[0]), key))
                     {
                         if (GetBoolArg("-printcoinstake"))
@@ -1574,6 +1573,26 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 }
                 else
                     scriptPubKeyOut = scriptPubKeyKernel;
+
+                if (whichType == TX_PUBKEY)
+                {
+                    valtype& vchPubKey = vSolutions[0];
+                    if (!keystore.GetKey(Hash160(vchPubKey), key))
+                    {
+                        if (fDebug && GetBoolArg("-printcoinstake"))
+                            printf("CreateCoinStake : failed to get key for kernel type=%d\n", whichType);
+                        break;  // unable to find corresponding public key
+                    }
+
+                if (key.GetPubKey() != vchPubKey)
+                {
+                    if (fDebug && GetBoolArg("-printcoinstake"))
+                        printf("CreateCoinStake : invalid key for kernel type=%d\n", whichType);
+                        break; // keys mismatch
+                    }
+
+                     scriptPubKeyOut = scriptPubKeyKernel;
+                }
 
                 txNew.nTime -= n;
                 txNew.vin.push_back(CTxIn(pcoin.first->GetHash(), pcoin.second));
@@ -1645,12 +1664,24 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         // Set output amount
         if (txNew.vout.size() == 3)
         {
+            if (fStakeUsePooledKeys)
+            {
+                CReserveKey reservekey((CWallet*) &keystore);
+
+                // Replace current key with the new one
+                txNew.vout[2].SetNull();
+                txNew.vout[2].scriptPubKey << reservekey.GetReservedKey() << OP_CHECKSIG;
+
+                // Remove key from pool
+                reservekey.KeepKey();
+            }
 			if(pindexBest->nHeight > 14200 ) // Fix rounded
 				txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 );
 			else
 				txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 / CENT ) * CENT;
-				txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
-        	}
+			
+            txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
+        }
         else
             txNew.vout[1].nValue = nCredit - nMinFee;
 
